@@ -145,3 +145,8 @@ class ProductLookupTests(TestCase):
         # Only third_product contains the word "else something"
         # Note : third_product.product_name is "something else"
         self.assertEqual(len(response.context['alternatives']), 1)
+
+        url = reverse("product_lookup:product_lookup_by_name",
+                      kwargs={'productname': 'else something'})
+        self.connected_client.get(url)
+        self.assertEqual(response.status_code, 200)
