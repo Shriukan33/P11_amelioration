@@ -117,3 +117,31 @@ class ProductLookupTests(TestCase):
         self.assertEqual(str(self.category), 'test_category')
         self.assertEqual(str(self.product), 'test_product')
         self.assertEqual(str(self.favorite), 'test_product3')
+
+    def test_ProductLookupByNameView(self):
+        """
+        Test that lookupbyname view returns the correct number of products
+        """
+        url = reverse("product_lookup:product_lookup_by_name",
+                      kwargs={'product_name': 'test_product'})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        # All 3 products contain the word "test_product"
+        self.assertEqual(len(response.context['alternatives']), 3)
+
+        self.third_product.product_name = "something else"
+        self.third_product.save()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        # Only 2 products contain the word "test_product"
+        self.assertEqual(len(response.context['alternatives']), 2)
+
+        # We look up the third_product with its terms in a different order
+        url = reverse("product_lookup:product_lookup_by_name",
+                      kwargs={'product_name': 'else something'})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        # Only third_product contains the word "else something"
+        # Note : third_product.product_name is "something else"
+        self.assertEqual(len(response.context['alternatives']), 1)
