@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.test import Client, TestCase
 from django.urls import reverse
 from .models import Products, Favorites, Category
@@ -118,35 +119,43 @@ class ProductLookupTests(TestCase):
         self.assertEqual(str(self.product), 'test_product')
         self.assertEqual(str(self.favorite), 'test_product3')
 
+    def lookup_by_name_response(
+            self, product_name: str, client: Client = None) -> HttpResponse:
+        """
+        Test that the lookup_by_name returns a 200 response and return
+        said response.
+        """
+        url = reverse('product_lookup:product_lookup_by_name',
+                      kwargs={'product_name': product_name})
+        if not client:
+            response = self.client.get(url)
+        else:
+            response = client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        return response
+
     def test_ProductLookupByNameView(self):
         """
         Test that lookupbyname view returns the correct number of products
         """
-        url = reverse("product_lookup:product_lookup_by_name",
-                      kwargs={'product_name': 'test_product'})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+
+        response = self.lookup_by_name_response('test_product')
         # All 3 products contain the word "test_product"
         self.assertEqual(len(response.context['alternatives']), 3)
 
         self.third_product.product_name = "something else"
         self.third_product.save()
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        response = self.lookup_by_name_response('test_product')
         # Only 2 products contain the word "test_product"
         self.assertEqual(len(response.context['alternatives']), 2)
 
         # We look up the third_product with its terms in a different order
-        url = reverse("product_lookup:product_lookup_by_name",
-                      kwargs={'product_name': 'else something'})
-        response = self.client.get(url)
+        response = self.lookup_by_name_response("else something")
 
-        self.assertEqual(response.status_code, 200)
         # Only third_product contains the word "else something"
         # Note : third_product.product_name is "something else"
         self.assertEqual(len(response.context['alternatives']), 1)
 
-        url = reverse("product_lookup:product_lookup_by_name",
-                      kwargs={'productname': 'else something'})
-        self.connected_client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.lookup_by_name_response("else something", self.connected_client)
+        self.assertEqual(len(response.context['alternatives']), 1)
