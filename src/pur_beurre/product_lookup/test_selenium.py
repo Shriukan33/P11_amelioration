@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 from .tests import ProductLookupTests
@@ -5,6 +6,7 @@ from .models import Favorites, Products
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import Client
 
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
@@ -35,10 +37,11 @@ class ProductLookupSeleniumTest(StaticLiveServerTestCase):
         self.options.add_argument("--enable-javascript")
         self.options.add_argument(
             '--disable-blink-features=AutomationControlled')
-        # self.options.add_argument('--headless')
+        self.options.add_argument('--headless')
+        self.options.add_argument("--window-size=2000,1500")
         self.browser = WebDriver(ChromeDriverManager().install(),
                                  chrome_options=self.options)
-        self.browser.implicitly_wait(60)
+        self.browser.implicitly_wait(3)
 
     def tearDown(self) -> None:
         self.browser.quit()
@@ -61,8 +64,12 @@ class ProductLookupSeleniumTest(StaticLiveServerTestCase):
         # Look for the add to favorite button
         to_be_added_product_id = Products.objects.get(
             product_name="test_product2").id
-        self.browser.find_element_by_id(
-            f'product_add_{to_be_added_product_id}').click()
+        # Click on Save button
+        ActionChains(self.browser).move_to_element(
+            self.browser.find_element_by_id(
+                f'product_add_{to_be_added_product_id}')
+                ).click().perform()
+        # Wait for the "Supprimer" button to be visible
         WebDriverWait(self.browser, 30).until(
             EC.visibility_of_element_located(
                 (By.ID, f"product_remove_{to_be_added_product_id}")))
@@ -70,13 +77,15 @@ class ProductLookupSeleniumTest(StaticLiveServerTestCase):
         self.assertEqual(Favorites.objects.count(), 2)
 
         # We then re-click the button to remove the item from favorites
-        self.browser.find_element_by_id(
-            f'product_remove_{to_be_added_product_id}').click()
+        ActionChains(self.browser).move_to_element(
+            self.browser.find_element_by_id(
+                f'product_remove_{to_be_added_product_id}')).click().perform()
+        # Wait for the "Sauvegarder" button to be visible
         WebDriverWait(self.browser, 30).until(
             EC.visibility_of_element_located(
                 (By.ID, f"product_add_{to_be_added_product_id}")))
+        time.sleep(0.100)
 
-        # We should have only 1 item in favorites
         self.assertEqual(Favorites.objects.count(), 1)
 
         self.tearDown()

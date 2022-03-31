@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 
 from dotenv import load_dotenv
-import django_heroku
 
 
 load_dotenv()
@@ -29,9 +31,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_P8_SECRETKEY')
 
+sentry_sdk.init(
+    dsn="https://528308f811234c9f9668b19ec58a55db@o1171137.ingest.sentry.io/6265281",  # noqa
+    integrations=[DjangoIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production,
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True,
+
+    # By default the SDK will try to use the SENTRY_RELEASE
+    # environment variable, or infer a git commit
+    # SHA as release, however you may want to set
+    # something more human-readable.
+    # release="myapp@1.0.0",
+)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 ROLE = os.environ.get('DJANGO_P8_ROLE')
-if ROLE == "prod":
+if ROLE == "production":
     DEBUG = False
     SESSION_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
@@ -39,9 +61,9 @@ if ROLE == "prod":
 elif ROLE == "dev":
     DEBUG = True
 
-ALLOWED_HOSTS = [
-    'p8-plateforme-purbeurre.herokuapp.com',
-    'localhost', '127.0.0.1', '[::1]', "0.0.0.0"]
+ALLOWED_HOSTS = ['benja.fr', '194.195.240.175',
+                 'p8-plateforme-purbeurre.herokuapp.com',
+                 'localhost', '127.0.0.1', '[::1]', "0.0.0.0"]
 
 
 # Application definition
@@ -107,18 +129,74 @@ if ROLE == "dev":
             'PORT': '5432',
         }
     }
-elif ROLE == "prod":
+elif ROLE == "production":
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'P8_purbeurre',
-            'USER': 'postgres',
+            'USER': os.environ.get('PG_PROD_USER'),
             'PASSWORD': os.environ.get('PG_PASSWORD'),
-            'HOST': os.environ.get('DATABASE_URL'),
+            'HOST': 'localhost',
             'PORT': '5432',
         }
     }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': "pur_beurre.log",
+            'formatter': 'django.server',
+        }
+    },
+    'loggers': {
+        'app': {
+            # 'handlers': ['console', 'mail_admins'],
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django': {
+            # 'handlers': ['console', 'mail_admins'],
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -157,7 +235,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = os.environ.get('STATIC_URL')
-STATIC_ROOT = os.environ.get('STATIC_ROOT')
+STATIC_ROOT = BASE_DIR / "staticfiles"
 # Prefix for uploaded files. Must be different from static_url
 MEDIA_URL = os.environ.get('MEDIA_URL')
 # Directory where uploaded files are stored
@@ -168,6 +246,3 @@ MEDIA_ROOT = \
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Activate Django-Heroku.
-django_heroku.settings(locals())

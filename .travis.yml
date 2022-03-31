@@ -1,0 +1,15 @@
+language: python
+python:
+  - "3.8-dev"
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+# For selenium to run
+addons:
+  chrome: stable
+services:
+  - postgresql
+# command to run tests
+script:
+  - cd src/pur_beurre
+  - python3 manage.py test
