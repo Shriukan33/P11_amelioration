@@ -16,6 +16,9 @@
         </header>
         <h1 class="d-flex justify-content-center mx-auto mt-3 text-center">{{alternatives|length}} résultat(s) pour : {{product_name}}</h1>
     {% endif %}
+    <div class="d-flex justify-content-center mx-auto mt-3 text-center">
+        <a href="{% url "product_lookup:product_lookup_by_name" product_name %}">Afficher les produits contenant "{{product_name}}"</a>
+    </div>
 
     <section id="results" class="d-flex col-10 col-md-8 flex-wrap justify-content-around mx-auto">
         {% for product in alternatives %}

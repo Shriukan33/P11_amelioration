@@ -62,6 +62,45 @@ class ProductLookupResultsView(TemplateView):
         return context
 
 
+class ProductLookupByNameView(TemplateView):
+    """This view allows the user to lookup a product using its name"""
+
+    template_name = 'product_lookup/product_lookup_by_name.html'
+
+    def get_context_data(self, **kwargs) -> dict:
+
+        context = super().get_context_data(**kwargs)
+        product_name = kwargs['product_name']
+        context["searched_product"] = product_name
+        list_of_terms = product_name.split()
+
+        # Get the products that contain the searched term
+        searched_product = Products.objects.filter(
+            product_name__icontains=list_of_terms[0]
+            ).order_by('product_nutriscore')
+
+        # To have a search where "a b" is equal to "b a", we
+        # filter to query by term so the order isn't important.
+        # example : "chocolat noisette" is the same as "noisette chocolat"
+        # Without this filtering, if the product was
+        # named "Granola noisette chocolat" and the search term
+        # was "chocolat noisette", the product wouldn't be found.
+        for term in list_of_terms:
+            searched_product = searched_product.filter(
+                product_name__icontains=term)
+
+        context['alternatives'] = searched_product
+
+        # Get the list of products ids that the user has already
+        # added to his favorites
+        if self.request.user.is_authenticated:
+            user_favorites = self.request.user.favorites_set.all()
+            fav_id_list = [favorite.product.id for favorite in user_favorites]
+            context['favorites_id_list'] = fav_id_list
+
+        return context
+
+
 def favorite_click(request, *args, **kwargs):
     """
     This method is called when the user clicks on the favorite button.
