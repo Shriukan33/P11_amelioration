@@ -1,0 +1,59 @@
+{% extends 'product_lookup/base.html' %}
+{% load static %}
+
+{% block appcontent %}
+
+    {% if alternatives %}
+        <header style="background-color: black;">
+            <div class="container position-relative">
+                <div id="search-results-header" class="d-flex flex-column"
+                style="background-image: url({{searched_product.product_image}})">
+                </div>
+                <h1 id="search-results-header-text" class="d-flex m-auto position-absolute justify-content-center">
+                    {{ searched_product.product_name }}
+                </h1>
+            </div>
+        </header>
+        <h1 class="d-flex justify-content-center mx-auto mt-3 text-center">{{alternatives|length}} résultat(s) pour : {{product_name}}</h1>
+    {% endif %}
+
+    <section id="results" class="d-flex col-10 col-md-8 flex-wrap justify-content-around mx-auto">
+        {% for product in alternatives %}
+            <div class="d-flex col-10 col-md-4 flex-column mt-3 p-4 position-relative">
+                <div>
+                    <img src="{{product.product_image}}" alt="{{product.product_name}}" class="result-img d-flex m-auto img-fluid">
+                    <div class="nutriscore-badge nutriscore-{{product.product_nutriscore}}">{{product.product_nutriscore}}</div>
+                </div>
+                <h2 class="my-3 py-2 text-center">{{product.product_name}}</h2>
+                <button id="product_add_{{ product.id }}" class="d-flex save-btn" name="save_button">
+                    <span class="mx-auto">
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'authentification:login'%}">
+                        {% else %}
+                            <a href='#'>
+                        {% endif %}
+                        <i class="fa fa-floppy-o" aria-hidden="true">&nbsp;Sauvegarder</i>
+                        </a>
+                    </span>
+                </button>
+                <button id="product_remove_{{ product.id }}" class="save-btn remove" name="remove_button" style="display: none">
+                    <span class="mx-auto">
+                        <a href='#'>
+                            <i class="fa fa-trash-o" aria-hidden="true">&nbsp;Supprimer</i>
+                        </a>
+                    </span>
+                </button>
+            </div>
+        {% empty %}
+            <p>Aucun résultat pour "{{product_name}}"</p>
+        {% endfor %}
+    </section>
+
+{% endblock appcontent %}
+
+{% block javascript %}
+    {{ block.super }}
+    {{ favorites_id_list|json_script:"favorites_id_list" }}
+    <script src="{% static 'product_lookup/js/display_proper_favorite_button.js' %}" defer></script>
+    <script src="{% static 'product_lookup/js/add_to_favorites.js' %}" defer></script>
+{% endblock javascript %}

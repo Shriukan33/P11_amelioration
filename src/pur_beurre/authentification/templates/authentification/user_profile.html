@@ -1,0 +1,22 @@
+{% extends 'product_lookup/base.html' %}
+{% load static %}
+{% block appcontent %}
+
+    <header id="profile_banner" class="d-flex flex-column col-12 mb-4">
+        <div id="profile_banner_text" class="d-flex flex-column col-12 col-lg-4 m-auto">
+            <h1 class="mx-auto">Ahoy</h1>
+            <h2 class="mx-auto">{{ user.username }}&nbsp;!</h2>
+        </div>
+    </header>
+
+    {% if request.user.username == object.username %}
+        <div class="d-flex col-10 col-lg-6 mx-auto mt-3">
+            <p class="mx-auto">Votre adresse email est : {{ object.email }}</p>
+        </div>
+    {% else %}
+        <div class="d-flex col-10 col-lg-6">
+            <p>Vous n'avez pas la permission de voir ceci.</p>
+        </div>
+    {% endif %}
+
+{% endblock appcontent %}

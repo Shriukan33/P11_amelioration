@@ -1,0 +1,82 @@
+{% extends 'product_lookup/base.html' %}
+{% load static %}
+
+{% block appcontent %}
+    <header>
+        <div id="homepage_header" class="d-flex flex-column">
+            <div id="homepage_header_text" class="d-flex flex-column mx-auto mb-3 mt-auto col-8">
+                <h1>Du gras, oui, mais de la qualité!</h1>
+                <h2>
+                    Trouvez un produit de substitution pour ceux
+                    que vous consommez tous les jours
+                </h2>
+            </div>
+            <div id="homepage_header_searchbar" class="d-flex mx-auto mb-auto col-10 col-md-4">
+                <form method="POST" action="{% url 'product_lookup:product_lookup' %}"
+                class="d-flex flex-row mx-auto">
+                    {% csrf_token %}
+                    <input type="text" class="form-control align-middle" placeholder="Produit"
+                    aria-label="Produit" aria-describedby="basic-addon2" name="product_name" required>
+                    <div class="input-group-append">
+                        <button class="btn search-btn" type="submit">
+                            Chercher
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header> <!-- /header -->
+
+    <section id="presentation" class="d-flex flex-column">
+        <div class="d-flex flex-column mx-auto justify-content-center">
+            <h2 class="mx-auto mt-4">Colette et Remy</h2>
+            <hr class="mx-auto" style="width: 10%;">
+            <p class="d-flex col-10 col-lg-4 mx-auto ">
+                Colette et Remy sont deux amis qui se sont rencontrés
+                dans un restaurant parisien, alors tous deux cuisiniers.
+                Passionnés par la cuisine et la nutrition, ils s'associent
+                pour créer un site de recherche de produits de substitution
+                pour aider les personnes à manger plus sainement sans sacrifier
+                le goût du produit.
+            </p>
+        </div>
+        <div class="d-flex flex-wrap col-12 col-lg-6 justify-content-around mx-auto">
+            <figure class="d-flex flex-column col-6 col-lg-3">
+                <img src="{% static 'product_lookup/colette.png'%}"
+                alt="colette" class="mx-auto" />
+                <figcaption class="mx-auto">Colette</figcaption>
+            </figure>
+            <figure class="d-flex flex-column col-7 col-lg-3" >
+                <img src="{% static 'product_lookup/remy-cropped.png'%}"
+                alt="remy"
+                class="mx-auto"/>
+                <figcaption class="mx-auto">Remy</figcaption>
+            </figure>
+        </div>
+        <hr style="width:100%;">
+    </section> <!-- end of presentation -->
+
+    <section id="contact">
+        <div class="d-flex flex-column col-10 col-lg-4 mx-auto">
+            <h2 class="mx-auto">Contactez-nous</h2>
+            <hr class="mx-auto" style="width: 10%;">
+            <p class="mx-auto mb-5">
+                Vous avez des questions ? N'hésitez pas à nous contacter.
+            </p>
+        </div>
+
+        <div id="contact_info" class="d-flex col-10 col-lg-4 mx-auto mb-5 justify-content-around">
+            <div id="contact_info_phone" class="d-flex flex-column">
+                <i class="fas fa-phone-alt fa-5x mx-auto mb-3"></i>
+                <p>01 23 45 67 89</p>
+            </div>
+            <div id="contact_info_mail" class="d-flex flex-column">
+                <i class="fas fa-envelope fa-5x mx-auto mb-3"></i>
+                <p>mail@mail.com</p>
+            </div>
+        </div>
+
+    </section> <!-- end of contact -->
+
+{% endblock appcontent %}
+

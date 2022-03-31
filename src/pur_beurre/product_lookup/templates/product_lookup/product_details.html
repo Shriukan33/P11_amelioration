@@ -1,0 +1,30 @@
+{% extends 'product_lookup/base.html' %}
+{% load static %}
+
+{% block appcontent %}
+<header style="background-color: black;">
+    <div class="container position-relative">
+        <div id="search-results-header" class="d-flex flex-column"
+        style="background-image: url({{object.product_image}})">
+        </div>
+        <h1 id="search-results-header-text" class="d-flex m-auto position-absolute justify-content-center">
+            {{ object.product_name }}
+        </h1>
+    </div>
+</header>
+
+<div class="d-flex flex-column mt-4">
+    <div class="d-flex flex-wrap mx-auto justify-content-around col-10">
+        <img src="{% get_static_prefix %}product_lookup/nutri-{{ object.product_nutriscore }}.png"
+        alt="Nutriscore {{object.product_nutriscore}}" style="height:80px;width:150px;"
+        class="d-flex flex-column mx-auto col-10 col-md-6">
+        <img src="{{ object.nutritional_information }}" alt="nutritional_information" class="d-flex m-auto col-10 col-md-4"
+        style="max-height:30vh;max-width:auto;">
+    </div>
+    <a href="{{ object.product_url }}" class="d-flex mx-auto justify-content-center col-10 col-md-6 mt-4">
+        <button class="btn btn-primary">
+            Voir la fiche d'OpenFoodFacts
+        </button>
+    </a>
+</div>
+{% endblock appcontent %}

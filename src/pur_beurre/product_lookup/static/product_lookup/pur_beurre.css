@@ -1,0 +1,228 @@
+/* ########## GENERAL ########## */
+:root {
+    /* Colors */
+    --rooibos-chocolat: #c45525;
+    --moules-frites: #345a61;
+    --bonbon-rigolo: #86ebe6;
+    --caramel-mou: #de9440;
+    --biscuit-trempe: #e8a75d;
+}
+body {
+    font-family: "Open Sans", sans-serif; /* For text */
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Scope One", sans-serif; /* For titles */
+}
+/* ########## TEMPLATES ########## */
+/* product_lookup/base.html */
+#navbar_logo {
+    color: black;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+#navbar {
+    background-color: var(--biscuit-trempe);
+}
+#footer-nav a:link, #footer-nav a:visited, #footer-nav a:hover, #footer-nav a:active {
+    color: black;
+    text-decoration: none;
+}
+@media screen and (min-width: 992px) {
+    .aligned-icon {
+        display: none;
+    }
+}
+@media screen and (max-width: 992px) {
+    .aligned-icon {
+        transform: translate(5px, 10%);
+    }
+}
+button.search-btn {
+    background-color: var(--rooibos-chocolat);
+    border: none;
+    border-radius: 0px 5px 5px 0px;
+    cursor: pointer;
+    height: 100%;
+    font-weight: 600;
+}
+button.search-btn:hover {
+    background-color: var(--moules-frites);
+    transition: background-color 0.2s ease-in-out;
+}
+/* Font awesome icons */
+i.fas.fa-user-circle {
+    color: black;
+}
+i.fas.fa-user-circle:hover {
+    color: var(--moules-frites);
+    transition: color 0.25s;
+}
+i.fas.fa-sign-out-alt {
+    color: black;
+}
+i.fas.fa-sign-out-alt:hover {
+    color: var(--moules-frites);
+    transition: color 0.25s;
+}
+i.fas.fa-search {
+    color: black;
+}
+/* product_lookup/product_lookup.html */
+#homepage_header{
+    background-image: url('../product_lookup/photo-bg-accueil-min.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 60vh;
+}
+#homepage_header_text {
+    color: white;
+    font-size: 2vw;
+    font-weight: 600;
+    text-align: center;
+}
+#homepage_header_text h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+}
+#homepage_header_text h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+@media screen and (min-width: 992px) {
+
+    #homepage_header_text h1 {
+        font-size: 4rem;
+        font-weight: 600;
+    }
+    #homepage_header_text h2 {
+        font-size: 3rem;
+        font-weight: 600;
+    }
+}
+#presentation img {
+    max-width: 300px;
+    max-height: 360px;
+}
+/* product_lookup/product_lookup_results.html */
+#search-results-header {
+    background-image: url('../product_lookup/photo-bg-accueil-min.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 30vh;
+    background-color: black;
+    opacity: 0.5;
+}
+#search-results-header-text {
+    color: white;
+    font-size: 5vh;
+    font-weight: 600;
+    text-align: center;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.save-btn {
+    background-color: var(--rooibos-chocolat);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    position: absolute;
+    bottom: -5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    text-align: center;
+    margin: 0 auto;
+}
+.save-btn a {
+    color: inherit;
+    text-decoration: none;
+}
+.save-btn:hover {
+    background-color: var(--moules-frites);
+    transition: background-color 0.2s ease-in-out;
+}
+.nutriscore-badge {
+    background-color: var(--caramel-mou);
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 5px;
+    text-align: center;
+    text-transform: uppercase;
+    position: absolute;
+    top: 1%;
+    right: 1%;
+    width: 2em;
+}
+.nutriscore-badge.nutriscore-a {
+    background-color: #008f00;
+}
+.nutriscore-badge.nutriscore-b {
+    background-color: #73BF00;
+}
+.nutriscore-badge.nutriscore-c {
+    background-color: #FFCC00;
+}
+.nutriscore-badge.nutriscore-d {
+    background-color: #FF6600;
+}
+.nutriscore-badge.nutriscore-e {
+    background-color: #FF1900;
+}
+.nutri-a {
+    background-image: url('../product_lookup/nutri-a.png');
+
+}
+.nutri-b {
+    background-image: url('../product_lookup/nutri-b.png');
+    background-size: contain;
+}
+.nutri-c {
+    background-image: url('../product_lookup/nutri-c.png');
+    background-size: contain;
+}
+.nutri-d {
+    background-image: url('../product_lookup/nutri-d.png');
+    background-size: contain;
+}
+.nutri-e {
+    background-image: url('../product_lookup/nutri-e.png');
+    background-size: contain;
+}
+
+.result-img {
+    height: 20vh;
+    object-fit: contain;
+}
+/* authentification/user_profile.html */
+#profile_banner {
+    background-image: url('../authentification/ratatouille-12.jpg');
+    background-size: 100% 100%;
+    /* background-repeat: no-repeat;
+    background-position: 100% 65%; */
+    height: 30vh;
+}
+#profile_banner_text h1 {
+    color: white;
+    font-size: 3rem;
+    font-weight: 900;
+}
+#profile_banner_text h2 {
+    color: white;
+    font-size: 2rem;
+    font-weight: 600;
+}
+@media screen and (min-width: 992px) {
+    #profile_banner_text h1 {
+        font-size: 4rem;
+        font-weight: 900;
+    }
+    #profile_banner_text h2 {
+        font-size: 3rem;
+        font-weight: 600;
+    }
+}

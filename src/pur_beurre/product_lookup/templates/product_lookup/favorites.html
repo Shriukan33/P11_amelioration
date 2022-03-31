@@ -1,0 +1,47 @@
+{% extends 'product_lookup/product_lookup_results.html' %}
+{% load static %}
+
+{% block appcontent %}
+
+<section id="results" class="d-flex col-10 col-md-8 flex-wrap justify-content-around mx-auto">
+    {% for product in favorites %}
+        <div class="d-flex col-10 col-md-4 flex-column mt-3 p-4 position-relative">
+            <div>
+                <a href="{% url 'product_lookup:product_lookup_results' product.product.product_name %}" >
+                <img src="{{product.product.product_image}}" alt="{{product.product.product_name}}" class="result-img d-flex m-auto img-fluid">
+                <div class="nutriscore-badge nutriscore-{{product.product.product_nutriscore}}">{{product.product.product_nutriscore}}</div>
+                </a>
+            </div>
+            <h2 class="my-3 py-2 text-center">
+                <a href="{% url 'product_lookup:product_details' product.product.id %}"
+                style="text-decoration:none;color:inherit;"> 
+                    {{product.product.product_name}}
+                </a>
+            </h2>
+            <button id="product_add_{{ product.product.id }}" class="d-flex save-btn" name="save_button">
+                <span class="mx-auto">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'authentification:login'%}">
+                    {% else %}
+                        {% comment %} <a href="{% url 'product_lookup:save_product' product.id %}"> {% endcomment %}
+                        <a href='#'>
+                    {% endif %}
+                    <i class="fa fa-floppy-o" aria-hidden="true">&nbsp;Sauvegarder</i>
+                    </a>
+                </span>
+            </button>
+            <button id="product_remove_{{ product.product.id }}" class="save-btn remove" name="remove_button" style="display: none">
+                <span class="mx-auto">
+                    {% comment %} <a href="{% url 'product_lookup:remove_product' product.id %}"> {% endcomment %}
+                    <a href='#'>
+                        <i class="fa fa-trash-o" aria-hidden="true">&nbsp;Supprimer</i>
+                    </a>
+                </span>
+            </button>
+        </div>
+    {% empty %}
+        <p>Aucun Favoris pour le moment !</p>
+    {% endfor %}
+
+{% endblock appcontent %}
+
